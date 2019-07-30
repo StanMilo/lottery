@@ -1,0 +1,74 @@
+.game-container {
+    /* display: table; Make the container element behave like a table */
+    width: 50%; /* Set full-width to expand the whole page */
+}
+
+.section-container {
+    padding-right: 1px;
+    padding-left: 1px;
+}
+
+.section-1 {
+    border: 3px solid salmon;
+    height: 260px;
+    margin-bottom: 1px;
+    padding-left: 24px;
+    padding-top: 2px;
+}
+
+.section-2 {
+    border: 3px solid salmon;
+    height: 80px;
+    margin-top: 1px;
+    padding-top: 3px;
+}
+
+.section-3 {
+    border: 3px solid salmon;
+    height: 200px;
+    margin-bottom: 1px;
+}
+
+.section-4 {
+    border: 3px solid salmon;
+    margin-top: 1px;
+}
+
+.btn-circle {
+    width: 50px;
+    height: 50px;
+    padding-top: 11px;
+    border-radius: 50px;
+}
+
+.btn-sec1 {
+    border-radius: 50px;
+    width: 50px;
+    height: 50px;
+}
+
+.add-ticket {
+    width: 370px;
+    height: 70px;
+    margin-left: 1px;
+    /* display: none; */
+}
+
+.play {
+    width: 370px;
+    height: 70px;
+    display: none;
+}
+
+.result {
+    float: left;
+    /* padding-block: 30px; */
+}
+
+.win {
+    background-color: royalblue;
+}
+
+.lose {
+    background-color: red;
+}
