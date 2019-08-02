@@ -1,7 +1,65 @@
 import { DealComponent } from './components/deal-component';
+import ticketListTemplate from './components/ticket-list-template';
+import boardTemplate from './components/board-template';
+
+const PlaySelector = 'js-play';
+const AddTicketSelector = 'js-add-ticket';
+const TicketRowSelector = 'js-ticket-row';
+const BtnNumSelector = 'js-btn';
 
 class Game {
     constructor() {
+        this.init();
+    }
+
+    addBtnClick() {
+        let buttons = document.getElementsByClassName(BtnNumSelector);
+        for (let i = 0; i < buttons.length; i++) {
+            buttons[i].onclick = this.handleBtnClick.bind(this);
+        }
+    }
+
+    onFinish(winNums) {
+        this.ticketList.forEach((ticket, key) => {
+            let isWining = this.isWiningTicket(ticket, winNums);
+            let status = isWining ? 'win' : 'lose';
+            document.getElementsByClassName(TicketRowSelector)[key].classList.add(status);
+        });
+        // resets game after 5 seconds
+        setTimeout(this.resetGame.bind(this), 5000);
+    }
+
+    handlePlayClick() {
+        if (this.playDisabled) {
+            return;
+        }
+        new DealComponent().start(this.onFinish.bind(this));
+        this.playDisabled = true;
+    }
+
+    handleTicketClick() {
+        if (this.hasReachedTicketMaxNum() || this.selectedNum.length == 0) {
+            return;
+        }
+        this.ticketList.push(this.selectedNum);
+        this.resetTicket();
+    }
+
+    handleBtnClick(event) {
+        if (this.selectedNum.length >= this.maxNumsPlayed) {
+            return;
+        }
+        let element = event.currentTarget;
+        let numValue = element.dataset.number;
+        element.style.backgroundColor = '#247cea';
+        this.selectedNum.push(numValue);
+    }
+
+    hasReachedTicketMaxNum() {
+        return this.ticketList.length > this.maxTicketsNum;
+    }
+
+    init() {
         this.startNum = 1;
         this.endNum = 30;
         this.selectedNum = [];
@@ -9,90 +67,37 @@ class Game {
         this.winArray = [];
         this.maxTicketsNum = 4;
         this.maxNumsPlayed = 5;
-    }
-
-    addBtnClick() {
-        let buttons = document.getElementsByClassName('btn-sec1');
-        for (let i = 0; i < buttons.length; i++) {
-            buttons[i].onclick = this.clickBtnHandler.bind(this);
-        }
-    }
-
-    addTicketHandler() {
-        if (this.hasReachedTicketMaxNum()) {
-            return;
-        }
-        this.ticketList.push(this.selectedNum);
-        this.resetTicket();
-    }
-
-    addPlayHandler() {
-        new DealComponent().start(this.checkForWinTicket.bind(this));
-    }
-
-    checkForWinTicket(winNums) {
-        this.ticketList.forEach((ticket, key) => {
-            let isWining = this.isWiningTicket(ticket, winNums);
-            let status = isWining ? 'win' : 'lose';
-            document.getElementsByClassName('ticket-row')[key].classList.add(status);
-        });
+        this.playDisabled = false;
     }
 
     isWiningTicket(ticket, winNums) {
         return ticket.every((value) => winNums.indexOf(parseInt(value)) > -1);
     }
 
-    clickBtnHandler(event) {
-        if (this.selectedNum.length >= this.maxNumsPlayed) {
-            return;
-        }
-        let element = event.currentTarget;
-        let numValue = element.dataset.number;
-        element.style.backgroundColor = 'red';
-        this.selectedNum.push(numValue);
-        console.log(this.selectedNum);
-    }
-
-    hasReachedTicketMaxNum() {
-        return this.ticketList.length > this.maxTicketsNum;
-    }
-
-    renderBoard() {
-        let HTML = '';
-        for (let i = this.startNum; i <= this.endNum; i++) {
-            HTML += `<div type="button" data-number="${i}" class="btn btn-sec1">${i}</div> `;
-            document.getElementById('section-1').innerHTML = HTML;
-        }
-    }
-
-    renderTicketList() {
-        let HTML = '';
-        this.ticketList.forEach((ticket) => {
-            HTML += `<tr class="ticket-row">`;
-            ticket.forEach((number) => {
-                HTML += `<th><span class="ball">${number}</span></th>`;
-            });
-            HTML += `</tr>`;
-        });
-        document.getElementById('tbody').innerHTML = HTML;
+    resetGame() {
+        this.init();
+        document.getElementById(PlaySelector).style.display = 'none';
+        document.getElementById(AddTicketSelector).style.display = 'inline';
+        document.getElementById('tbody').innerHTML = '';
+        document.getElementById('sec-3').innerHTML = '';
     }
 
     resetTicket() {
         if (this.hasReachedTicketMaxNum()) {
-            document.getElementById('play').style.display = 'inline';
-            document.getElementById('add-ticket').style.display = 'none';
+            document.getElementById(PlaySelector).style.display = 'inline';
+            document.getElementById(AddTicketSelector).style.display = 'none';
         }
         this.selectedNum = [];
-        this.renderBoard();
+        boardTemplate(this.startNum, this.endNum);
         this.addBtnClick();
-        this.renderTicketList();
+        ticketListTemplate(this.ticketList);
     }
 
     startGame() {
-        this.renderBoard();
+        boardTemplate(this.startNum, this.endNum);
         this.addBtnClick();
-        document.getElementById('play').onclick = this.addPlayHandler.bind(this);
-        document.getElementById('add-ticket').onclick = this.addTicketHandler.bind(this);
+        document.getElementById(PlaySelector).onclick = this.handlePlayClick.bind(this);
+        document.getElementById(AddTicketSelector).onclick = this.handleTicketClick.bind(this);
     }
 }
 

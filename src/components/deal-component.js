@@ -29,13 +29,13 @@ export class DealComponent {
         for (let i = 0; i < this.drawedNums.length; i++) {
             setTimeout(() => {
                 let HTML = `<div 
-                button type="button" class="btn btn-outline-primary btn-circle active" role="button" aria-pressed="true"
+                 class="result-balls glow"
                 >${this.drawedNums[i]}</div>`;
                 document.getElementById('sec-3').innerHTML += HTML;
                 if (i == this.drawedNums.length - 1) {
                     this.onFinish(this.drawedNums);
                 }
-            }, i * 500);
+            }, i * 2000);
         }
     }
 }
